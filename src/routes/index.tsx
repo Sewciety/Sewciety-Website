@@ -3,6 +3,8 @@ import { useState } from "react";
 import type { FormEvent } from "react";
 import { Bell, Megaphone, Newspaper, Scissors } from "lucide-react";
 import { cn } from "@/lib/utils";
+import type { Topic } from "@/lib/newsletter/topics";
+import { subscribeToNewsletter } from "@/lib/newsletter/subscribe.functions";
 import flatlay from "@/assets/polaroid-flatlay.jpg";
 import embroidery from "@/assets/embroidery-hoop.jpg";
 
@@ -54,6 +56,14 @@ const STAY_IN_LOOP_OPTIONS = [
     note: "(Note: Workshop registration often opens and closes between issues!)",
   },
 ] as const;
+
+type FormError = "invalid_email" | "no_topics" | "unavailable";
+
+const FORM_ERROR_MESSAGES: Record<FormError, string> = {
+  invalid_email: "Valid email required",
+  no_topics: "Pick at least one option above",
+  unavailable: "Something went wrong, try again",
+};
 
 function Tape({ className }: { className?: string }) {
   return (
@@ -127,12 +137,16 @@ function ThreadSwash() {
 }
 
 function Index() {
-  const [selected, setSelected] = useState<Set<string>>(new Set(["alerts"]));
+  const [selected, setSelected] = useState<Set<Topic>>(new Set(["alerts"]));
   const [email, setEmail] = useState("");
   const [subscribed, setSubscribed] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<FormError | null>(null);
+  // Honeypot, see subscribeToNewsletter.
+  const [website, setWebsite] = useState("");
 
-  function toggle(id: string) {
+  function toggle(id: Topic) {
+    if (error === "no_topics") setError(null);
     setSelected((prev) => {
       const next = new Set(prev);
       if (next.has(id)) {
@@ -144,15 +158,34 @@ function Index() {
     });
   }
 
-  function handleSubscribe(e: FormEvent<HTMLFormElement>) {
+  async function handleSubscribe(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    if (submitting) return;
     const valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
     if (!valid) {
-      setError("Please enter a valid email address.");
+      setError("invalid_email");
+      return;
+    }
+    if (selected.size === 0) {
+      setError("no_topics");
       return;
     }
     setError(null);
-    setSubscribed(true);
+    setSubmitting(true);
+    try {
+      const result = await subscribeToNewsletter({
+        data: { email, topics: [...selected], website },
+      });
+      if (result.ok) {
+        setSubscribed(true);
+      } else {
+        setError(result.error);
+      }
+    } catch {
+      setError("unavailable");
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (
@@ -309,8 +342,8 @@ function Index() {
                     Email address
                   </label>
                   {error && (
-                    <p className="font-hand text-xl leading-none text-destructive">
-                      Valid email required
+                    <p role="alert" className="font-hand text-xl leading-none text-destructive">
+                      {FORM_ERROR_MESSAGES[error]}
                     </p>
                   )}
                 </div>
@@ -320,22 +353,33 @@ function Index() {
                   value={email}
                   onChange={(e) => {
                     setEmail(e.target.value);
-                    if (error) setError(null);
+                    if (error === "invalid_email") setError(null);
                   }}
                   placeholder="Enter your uwaterloo or personal email"
-                  aria-invalid={!!error}
+                  aria-invalid={error === "invalid_email"}
                   className={cn(
                     "h-12 w-full rounded-md border-2 bg-card px-4 shadow-sm outline-none transition-colors placeholder:text-muted-foreground/70",
-                    error
+                    error === "invalid_email"
                       ? "border-destructive bg-destructive/5"
                       : "border-stitch/40 focus:border-primary"
                   )}
                 />
+                <input
+                  type="text"
+                  name="website"
+                  value={website}
+                  onChange={(e) => setWebsite(e.target.value)}
+                  tabIndex={-1}
+                  autoComplete="off"
+                  aria-hidden
+                  className="absolute -left-[9999px] h-px w-px opacity-0"
+                />
                 <button
                   type="submit"
-                  className="h-13 w-full rounded-md bg-primary py-3.5 font-hand text-2xl text-primary-foreground shadow-md transition-transform hover:-rotate-[0.5deg] hover:scale-[1.01] active:scale-95"
+                  disabled={submitting}
+                  className="h-13 w-full rounded-md bg-primary py-3.5 font-hand text-2xl text-primary-foreground shadow-md transition-transform hover:-rotate-[0.5deg] hover:scale-[1.01] active:scale-95 disabled:pointer-events-none disabled:opacity-70"
                 >
-                  Subscribe
+                  {submitting ? "Subscribing…" : "Subscribe"}
                 </button>
               </>
             )}
