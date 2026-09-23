@@ -1,0 +1,153 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * Design system definition — "sewing scrapbook".
+ *
+ * The @theme inline block maps CSS custom properties to Tailwind utility
+ * classes (e.g. --color-primary -> bg-primary, text-primary).
+ *
+ * The :root and .dark blocks define the actual color values using oklch.
+ * All colors MUST use oklch format.
+ */
+
+@theme {
+  --font-display: "Pinyon Script", cursive;
+  --font-hand: "Caveat", cursive;
+  --font-body: "Lora", Georgia, serif;
+}
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --radius-4xl: calc(var(--radius) + 16px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-stitch: var(--stitch);
+  --color-tape: var(--tape);
+  --color-butter: var(--butter);
+  --color-blush: var(--blush);
+  --color-sage: var(--sage);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+}
+
+:root {
+  --radius: 0.625rem;
+  --background: oklch(0.965 0.02 92);
+  --foreground: oklch(0.4 0.055 45);
+  --card: oklch(0.985 0.008 95);
+  --card-foreground: oklch(0.4 0.055 45);
+  --popover: oklch(0.985 0.008 95);
+  --popover-foreground: oklch(0.4 0.055 45);
+  --primary: oklch(0.72 0.09 15);
+  --primary-foreground: oklch(0.99 0.008 95);
+  --secondary: oklch(0.91 0.08 95);
+  --secondary-foreground: oklch(0.4 0.055 45);
+  --muted: oklch(0.93 0.025 90);
+  --muted-foreground: oklch(0.55 0.045 50);
+  --accent: oklch(0.85 0.06 125);
+  --accent-foreground: oklch(0.4 0.055 45);
+  --destructive: oklch(0.577 0.185 27.325);
+  --destructive-foreground: oklch(0.99 0.008 95);
+  --border: oklch(0.87 0.035 75);
+  --input: oklch(0.87 0.035 75);
+  --ring: oklch(0.72 0.09 15);
+  --stitch: oklch(0.65 0.11 18);
+  --tape: oklch(0.87 0.06 30 / 0.8);
+  --butter: oklch(0.88 0.1 95);
+  --blush: oklch(0.87 0.07 20);
+  --sage: oklch(0.82 0.07 130);
+  --chart-1: oklch(0.72 0.09 15);
+  --chart-2: oklch(0.88 0.1 95);
+  --chart-3: oklch(0.82 0.07 130);
+  --chart-4: oklch(0.87 0.07 20);
+  --chart-5: oklch(0.55 0.045 50);
+}
+
+.dark {
+  --background: oklch(0.22 0.02 60);
+  --foreground: oklch(0.93 0.02 90);
+  --card: oklch(0.27 0.025 60);
+  --card-foreground: oklch(0.93 0.02 90);
+  --popover: oklch(0.27 0.025 60);
+  --popover-foreground: oklch(0.93 0.02 90);
+  --primary: oklch(0.78 0.09 15);
+  --primary-foreground: oklch(0.22 0.02 60);
+  --secondary: oklch(0.35 0.04 95);
+  --secondary-foreground: oklch(0.93 0.02 90);
+  --muted: oklch(0.32 0.02 60);
+  --muted-foreground: oklch(0.7 0.03 75);
+  --accent: oklch(0.35 0.04 125);
+  --accent-foreground: oklch(0.93 0.02 90);
+  --destructive: oklch(0.704 0.191 22.216);
+  --destructive-foreground: oklch(0.984 0.003 247.858);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.78 0.09 15);
+  --stitch: oklch(0.78 0.1 18);
+  --tape: oklch(0.6 0.05 30 / 0.7);
+  --butter: oklch(0.8 0.09 95);
+  --blush: oklch(0.7 0.07 20);
+  --sage: oklch(0.7 0.06 130);
+  --chart-1: oklch(0.78 0.09 15);
+  --chart-2: oklch(0.8 0.09 95);
+  --chart-3: oklch(0.7 0.06 130);
+  --chart-4: oklch(0.7 0.07 20);
+  --chart-5: oklch(0.7 0.03 75);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  body {
+    background-color: var(--color-background);
+    /* faint plaid grid, like patterned scrapbook paper */
+    background-image:
+      repeating-linear-gradient(
+        0deg,
+        color-mix(in oklab, var(--color-foreground) 3%, transparent) 0 1px,
+        transparent 1px 26px
+      ),
+      repeating-linear-gradient(
+        90deg,
+        color-mix(in oklab, var(--color-foreground) 3%, transparent) 0 1px,
+        transparent 1px 26px
+      );
+    color: var(--color-foreground);
+    font-family: var(--font-body);
+  }
+
+  ::selection {
+    background-color: color-mix(in oklab, var(--color-primary) 30%, transparent);
+  }
+}
